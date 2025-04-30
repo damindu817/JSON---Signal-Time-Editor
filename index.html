@@ -310,7 +310,9 @@
           if (row.Date && row.Time && row.Odd) {
             signals.push({
               date: row.Date.toString().split("T")[0],
-              time: row.Time.toString().slice(11, 19),
+              time: typeof row.Time === "string"
+                ? row.Time
+                : new Date(row.Time).toTimeString().slice(0, 8),
               odd: parseFloat(row.Odd)
             });
           }
