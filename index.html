@@ -139,6 +139,7 @@
             <th>Date</th>
             <th>Time</th>
             <th>Odd</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody></tbody>
@@ -178,16 +179,56 @@
     }
 
     function updateTable() {
+      // Sort by date and time
+      signals.sort((a, b) => {
+        const dateA = new Date(`${a.date}T${a.time}`);
+        const dateB = new Date(`${b.date}T${b.time}`);
+        return dateA - dateB;
+      });
+
       const tbody = document.querySelector('#signalTable tbody');
       tbody.innerHTML = '';
-      signals.forEach(sig => {
-        const row = `<tr><td>${sig.date}</td><td>${sig.time}</td><td>${sig.odd}</td></tr>`;
+      signals.forEach((sig, index) => {
+        const row = `<tr>
+          <td>${sig.date}</td>
+          <td>${sig.time}</td>
+          <td>${sig.odd}</td>
+          <td>
+            <button onclick="editSignal(${index})">Edit</button>
+            <button class="btn-danger" onclick="deleteSignal(${index})">Delete</button>
+          </td>
+        </tr>`;
         tbody.innerHTML += row;
       });
     }
 
     function updateJSON() {
+      // Also sort before displaying
+      signals.sort((a, b) => {
+        const dateA = new Date(`${a.date}T${a.time}`);
+        const dateB = new Date(`${b.date}T${b.time}`);
+        return dateA - dateB;
+      });
+
       document.getElementById('jsonOutput').value = JSON.stringify(signals, null, 2);
+    }
+
+    function editSignal(index) {
+      const sig = signals[index];
+      document.getElementById('dateInput').value = sig.date;
+      document.getElementById('timeInput').value = sig.time;
+      document.getElementById('oddInput').value = sig.odd;
+      signals.splice(index, 1);
+      updateTable();
+      updateJSON();
+    }
+
+    function deleteSignal(index) {
+      if (confirm("Delete this signal?")) {
+        signals.splice(index, 1);
+        updateTable();
+        updateJSON();
+      }
     }
 
     function clearAll() {
@@ -247,17 +288,17 @@
       reader.readAsArrayBuffer(file);
     }
 
-    document.addEventListener("DOMContentLoaded", function () {
-      updateClock();
-      setInterval(updateClock, 1000);
-    });
-
     function updateClock() {
       const now = new Date();
       const date = now.toLocaleDateString();
       const time = now.toLocaleTimeString();
       document.getElementById('liveClock').innerText = `${date} ${time}`;
     }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      updateClock();
+      setInterval(updateClock, 1000);
+    });
   </script>
 </body>
 </html>
