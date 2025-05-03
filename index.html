@@ -4,103 +4,188 @@
   <meta charset="UTF-8">
   <title>Signal Time Editor</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
   <style>
+    :root {
+      --primary: #4361ee;
+      --secondary: #3f37c9;
+      --danger: #f72585;
+      --light: #f8f9fa;
+      --dark: #212529;
+      --success: #4cc9f0;
+    }
+
+    * {
+      box-sizing: border-box;
+      transition: all 0.3s ease;
+    }
+
     body {
-      font-family: sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       margin: 0;
-      padding: 1rem;
-      background: #f9f9f9;
-      color: #333;
+      padding: 0;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      color: var(--dark);
+      min-height: 100vh;
     }
 
     .container {
-      max-width: 600px;
+      max-width: 800px;
       margin: auto;
+      padding: 2rem 1rem;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 0.8s forwards;
+    }
+
+    .title-container {
       text-align: center;
+      margin-bottom: 1rem;
     }
 
     .title {
-      font-size: 1.8rem;
+      font-size: 2rem;
       text-transform: uppercase;
-      border: 2px solid #007bff;
+      border: 3px solid var(--primary);
       background-color: white;
-      color: #007bff;
-      padding: 10px 40px;
-      border-radius: 10px;
+      color: var(--primary);
+      padding: 15px 50px;
+      border-radius: 15px;
       display: inline-block;
       margin-bottom: 0.5rem;
       font-weight: bold;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .clock-container {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1.5rem;
     }
 
     .clock {
-      font-size: 1.1rem;
-      padding: 6px 12px;
-      margin-bottom: 1rem;
-      border: 2px solid #6c757d;
-      background-color: #ffffff;
-      color: #212529;
-      border-radius: 6px;
-      display: inline-block;
-      min-width: 320px; max-width: 360px;
+      font-size: 1.2rem;
+      padding: 10px 20px;
+      border: 2px solid var(--primary);
+      background-color: white;
+      color: var(--dark);
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      text-align: center;
+      width: 100%;
+      max-width: 500px;
+    }
+
+    .input-group {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      margin-bottom: 1.5rem;
     }
 
     input, button {
-      padding: 0.5rem;
-      margin: 0.25rem 0;
+      padding: 0.75rem;
+      margin: 0.5rem 0;
       width: 100%;
-      box-sizing: border-box;
-      border: 1px solid #ccc;
-      border-radius: 5px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
     }
 
     button {
-      background: #007bff;
+      background: var(--primary);
       color: white;
       font-weight: bold;
       cursor: pointer;
+      border: none;
+    }
+
+    button:hover {
+      filter: brightness(1.1);
     }
 
     .btn-secondary {
-      background: #6c757d;
+      background: var(--secondary);
     }
 
     .btn-danger {
-      background: #dc3545;
+      background: var(--danger);
+    }
+
+    .btn-success {
+      background: var(--success);
     }
 
     table {
       width: 100%;
-      margin-top: 1rem;
-      border-collapse: collapse;
+      margin-top: 1.5rem;
+      border-collapse: separate;
+      border-spacing: 0;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     }
 
     th, td {
       border: 1px solid #ddd;
-      padding: 0.5rem;
+      padding: 0.75rem;
       text-align: center;
+    }
+
+    th {
+      background-color: var(--primary);
+      color: white;
+      font-weight: bold;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f8f9fa;
+    }
+
+    tr:hover {
+      background-color: #e9ecef;
     }
 
     .tabs {
       display: flex;
-      margin-top: 1rem;
+      margin-top: 1.5rem;
+      border-radius: 12px 12px 0 0;
+      overflow: hidden;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
 
     .tab {
       flex: 1;
       text-align: center;
-      padding: 0.5rem;
+      padding: 0.75rem;
       background: #eee;
       cursor: pointer;
+      font-weight: bold;
+    }
+
+    .tab:hover {
+      background: #ddd;
     }
 
     .tab.active {
-      background: #007bff;
+      background: var(--primary);
       color: white;
     }
 
     .tab-content {
       display: none;
-      margin-top: 1rem;
+      margin-top: 0;
     }
 
     .tab-content.active {
@@ -110,52 +195,179 @@
     textarea {
       width: 100%;
       height: 200px;
-      font-family: monospace;
+      font-family: 'Consolas', monospace;
+      padding: 1rem;
+      border-radius: 0 0 12px 12px;
+      border: 1px solid #ddd;
+      resize: vertical;
+      background: #f8f9fa;
     }
 
     #customAlert, #customConfirm {
       display: none;
       position: fixed;
-      top: 30%;
+      top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
       background: white;
-      padding: 20px;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      padding: 2rem;
+      border: none;
+      border-radius: 15px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
       z-index: 1000;
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
     }
 
     #alertOverlay, #confirmOverlay {
       display: none;
       position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.4);
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
       z-index: 999;
     }
 
     #customAlert button, #customConfirm button {
-      margin-top: 10px;
-      padding: 8px 16px;
+      margin-top: 1rem;
+      padding: 0.75rem 1.5rem;
       border: none;
-      border-radius: 5px;
+      border-radius: 8px;
+      width: auto;
+      display: inline-block;
+      margin-right: 0.5rem;
+    }
+
+    .file-upload {
+      position: relative;
+      margin: 1rem 0;
+    }
+
+    .file-upload input {
+      opacity: 0;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      cursor: pointer;
+    }
+
+    .file-upload-label {
+      display: block;
+      padding: 0.75rem;
+      background: var(--light);
+      border: 2px dashed #ccc;
+      border-radius: 8px;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .file-upload-label:hover {
+      border-color: var(--primary);
+      background: rgba(67, 97, 238, 0.1);
+    }
+
+    .loading {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--primary);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      z-index: 9999;
+    }
+
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 5px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s linear infinite;
+    }
+
+    .loading-text {
+      color: white;
+      margin-top: 1rem;
+      font-size: 1.2rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      text-align: center;
+      width: 100%;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 600px) {
+      .title {
+        font-size: 1.5rem;
+        padding: 10px 20px;
+      }
+      
+      .container {
+        padding: 1rem;
+      }
+      
+      .clock {
+        font-size: 1rem;
+      }
+      
+      input, button {
+        padding: 0.6rem;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1 class="title">SIGNAL TIME EDITOR : XTREME PREDICTOR</h1>
-    <div class="clock" id="liveClock">Loading time...</div>
+  <div class="loading">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">LOADING EDITOR</div>
+  </div>
 
-    <input type="date" id="dateInput">
-    <input type="time" id="timeInput" step="1">
-    <input type="number" id="oddInput" placeholder="Odd (e.g. 5.5)">
-    <button onclick="addSignal()">Add Signal</button>
-    <button class="btn-danger" onclick="clearAll()">Clear All</button>
-    <button class="btn-secondary" onclick="downloadJSON()">Download JSON</button>
-    <input type="file" accept=".xlsx, .xls" onchange="handleExcelUpload(event)">
+  <div class="container">
+    <div class="title-container">
+      <h1 class="title">SIGNAL TIME EDITOR : XTREME PREDICTOR</h1>
+    </div>
+    
+    <div class="clock-container">
+      <div class="clock" id="liveClock">Loading time...</div>
+    </div>
+
+    <div class="input-group">
+      <input type="date" id="dateInput">
+      <input type="time" id="timeInput" step="1">
+      <input type="number" id="oddInput" placeholder="Odd (e.g. 5.5)" step="0.1">
+      <button onclick="addSignal()" id="addButton">Add Signal</button>
+      <button class="btn-danger" onclick="clearAll()">Clear All</button>
+      <button class="btn-success" onclick="downloadJSON()">Download JSON</button>
+      
+      <div class="file-upload">
+        <label for="fileInput" class="file-upload-label">
+          <span>Upload Excel File (.xlsx, .xls)</span>
+        </label>
+        <input type="file" id="fileInput" accept=".xlsx, .xls" onchange="handleExcelUpload(event)">
+      </div>
+    </div>
 
     <div class="tabs">
       <div class="tab active" onclick="switchTab(0)">Signal Table</div>
@@ -178,7 +390,7 @@
 
     <div class="tab-content" id="jsonTab">
       <textarea id="jsonOutput" readonly></textarea>
-      <button onclick="copyJSON()">Copy JSON</button>
+      <button onclick="copyJSON()" class="btn-secondary">Copy JSON</button>
     </div>
   </div>
 
@@ -203,13 +415,20 @@
     let signals = [];
     let confirmCallback = null;
 
+    // Hide loading screen when page is loaded
+    window.addEventListener('load', function() {
+      setTimeout(function() {
+        document.querySelector('.loading').style.display = 'none';
+      }, 1000);
+    });
+
     function addSignal() {
       const date = document.getElementById('dateInput').value;
       let time = document.getElementById('timeInput').value;
       const odd = parseFloat(document.getElementById('oddInput').value);
 
       if (!date || !time || isNaN(odd)) {
-        showAlert("Fill all fields correctly!");
+        showAlert("Please fill all fields correctly!");
         return;
       }
 
@@ -273,17 +492,28 @@
     }
 
     function downloadJSON() {
+      if (signals.length === 0) {
+        showAlert("No signals to download!");
+        return;
+      }
+      
       const blob = new Blob([JSON.stringify(signals, null, 2)], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'signals.json';
+      a.download = `signals_${new Date().toISOString().slice(0,10)}.json`;
       a.click();
     }
 
     function copyJSON() {
+      if (signals.length === 0) {
+        showAlert("No JSON to copy!");
+        return;
+      }
+      
       navigator.clipboard.writeText(document.getElementById('jsonOutput').value)
-        .then(() => showAlert("JSON copied!"));
+        .then(() => showAlert("JSON copied to clipboard!"))
+        .catch(() => showAlert("Failed to copy JSON"));
     }
 
     function switchTab(index) {
@@ -299,40 +529,73 @@
       const file = event.target.files[0];
       if (!file) return;
 
+      const fileInput = document.getElementById('fileInput');
+      const label = fileInput.nextElementSibling;
+      label.innerHTML = '<span>Processing file...</span>';
+      
       const reader = new FileReader();
       reader.onload = function(e) {
-        const data = new Uint8Array(e.target.result);
-        const workbook = XLSX.read(data, { type: 'array' });
-        const sheet = workbook.Sheets[workbook.SheetNames[0]];
-        const rows = XLSX.utils.sheet_to_json(sheet);
+        try {
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, { type: 'array' });
+          const sheet = workbook.Sheets[workbook.SheetNames[0]];
+          const rows = XLSX.utils.sheet_to_json(sheet);
 
-        rows.forEach(row => {
-          if (row.Date && row.Time && row.Odd) {
-            signals.push({
-              date: row.Date.toString().split("T")[0],
-              time: typeof row.Time === "string"
-                ? row.Time
-                : new Date(row.Time).toTimeString().slice(0, 8),
-              odd: parseFloat(row.Odd)
-            });
+          const newSignals = [];
+          rows.forEach(row => {
+            if (row.Date && row.Time && row.Odd) {
+              newSignals.push({
+                date: row.Date.toString().split("T")[0],
+                time: typeof row.Time === "string"
+                  ? row.Time
+                  : new Date(row.Time).toTimeString().slice(0, 8),
+                odd: parseFloat(row.Odd)
+              });
+            }
+          });
+          
+          if (newSignals.length > 0) {
+            signals = signals.concat(newSignals);
+            updateTable();
+            updateJSON();
+            showAlert(`Successfully imported ${newSignals.length} signals from Excel!`);
+          } else {
+            showAlert("No valid signals found in the Excel file.");
           }
-        });
-        updateTable();
-        updateJSON();
+        } catch (error) {
+          showAlert("Error processing Excel file: " + error.message);
+        } finally {
+          label.innerHTML = '<span>Upload Excel File (.xlsx, .xls)</span>';
+          fileInput.value = '';
+        }
       };
       reader.readAsArrayBuffer(file);
     }
 
     function updateClock() {
       const now = new Date();
-      const date = now.toLocaleDateString();
-      const time = now.toLocaleTimeString();
-      document.getElementById('liveClock').innerText = `${date} ${time}`;
+      const date = now.toLocaleDateString('en-US', { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+      });
+      const time = now.toLocaleTimeString('en-US', { 
+        hour: '2-digit', 
+        minute: '2-digit', 
+        second: '2-digit',
+        hour12: true 
+      });
+      document.getElementById('liveClock').innerText = `${date} • ${time}`;
     }
 
-    document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function() {
       updateClock();
       setInterval(updateClock, 1000);
+      
+      // Set default date to today
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('dateInput').value = today;
     });
 
     function showAlert(message) {
